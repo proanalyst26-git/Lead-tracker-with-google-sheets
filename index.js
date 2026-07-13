@@ -8,10 +8,17 @@ const SHEET_ID = process.env.SHEET_ID;
 const app = express();
 app.use(express.json());
 
-const auth = new google.auth.GoogleAuth({
-  keyFile: './credentials.json',
-  scopes: ['https://www.googleapis.com/auth/spreadsheets'],
-});
+const auth = new google.auth.GoogleAuth(
+  process.env.GOOGLE_CREDENTIALS
+    ? {
+        credentials: JSON.parse(process.env.GOOGLE_CREDENTIALS),
+        scopes: ['https://www.googleapis.com/auth/spreadsheets'],
+      }
+    : {
+        keyFile: './credentials.json',
+        scopes: ['https://www.googleapis.com/auth/spreadsheets'],
+      }
+);
 const sheets = google.sheets({ version: 'v4', auth });
 
 const HEADER_ROW = ['Date', 'Name', 'Phone', 'Email', 'Property Interest'];
